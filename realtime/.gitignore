@@ -1,0 +1,3 @@
+node_modules
+dist
+.envdocker-compose up
