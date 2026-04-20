@@ -1,4 +1,3 @@
-
 services:
   postgres:
     image: postgres:16
@@ -8,7 +7,7 @@ services:
       POSTGRES_PASSWORD: krate123
       POSTGRES_DB: krate
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -16,13 +15,13 @@ services:
     image: redis:7-alpine
     container_name: krate-redis
     ports:
-      - '6379:6379'
+      - "6379:6379"
 
   gateway:
     build: ./gateway
     container_name: krate-gateway
     ports:
-      - '3000:3000'
+      - "3000:3000"
     depends_on:
       - postgres
       - redis
@@ -37,22 +36,25 @@ services:
     build: ./auth
     container_name: krate-auth
     ports:
-      - '3001:3001'
+      - "3001:3001"
     depends_on:
       - postgres
       - redis
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=postgresql://krate:krate123@postgres:5432/krate
+      - JWT_SECRET=supersecretkey123
     volumes:
       - ./auth:/app
       - /app/node_modules
+      - /app/src/generated
     command: npm run start:dev
 
   project-service:
     build: ./project-service
     container_name: krate-project-service
     ports:
-      - '3002:3002'
+      - "3002:3002"
     depends_on:
       - postgres
       - redis
@@ -67,7 +69,7 @@ services:
     build: ./jobs
     container_name: krate-jobs
     ports:
-      - '3003:3003'
+      - "3003:3003"
     depends_on:
       - postgres
       - redis
@@ -82,7 +84,7 @@ services:
     build: ./realtime
     container_name: krate-realtime
     ports:
-      - '3004:3004'
+      - "3004:3004"
     depends_on:
       - postgres
       - redis
@@ -97,7 +99,7 @@ services:
     build: ./logs
     container_name: krate-logs
     ports:
-      - '3005:3005'
+      - "3005:3005"
     depends_on:
       - postgres
       - redis
