@@ -32,4 +32,9 @@ export class AuthController {
     console.log('[Logout Service] ', userId);
     return this.authService.logout(userId);
   }
+
+  @Post('verify')
+  async verify(@Body('token') token: string) {
+    return this.authService.verify(token);
+  }
 }

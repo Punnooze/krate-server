@@ -156,11 +156,23 @@ export class AuthService {
     return { accessToken, refreshToken: newRefreshToken };
   }
 
-  async logout(userId: string){
+  async logout(userId: string) {
     await this.prisma.user.update({
       where: { id: userId },
       data: { refreshToken: null }
     });
     return { message: 'Logged out successfully' };
+  }
+
+  async verify(token: string) {
+    try {
+      const payload = await this.jwt.verifyAsync(token);
+      return {
+        userId: payload.sub, email: payload.email
+      }
+    }
+    catch {
+      throw new UnauthorizedException("Invalid token");
+    }
   }
 }
