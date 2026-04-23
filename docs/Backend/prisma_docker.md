@@ -19,6 +19,9 @@ npx prisma migrate reset
 docker exec -it krate-postgres psql -U krate -d krate -c "SELECT * FROM \"User\";"
 # View DB
 
+docker exec -it krate-postgres psql -U krate -d krate_auth -c "\dt"
+# View table schema
+
 
 
 docker-compose up
