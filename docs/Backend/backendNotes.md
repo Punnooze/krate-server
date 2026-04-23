@@ -1,11 +1,98 @@
 A module is a box that groups related things together. It tells NestJS what exists in this feature — what controllers handle requests, what services are available, what can be shared with other modules.
 
-Three important properties:
+---
 
-- `controllers` — the waiters for this module
-- `providers` — the chefs (services) for this module. Anything `@Injectable()` goes here
-- `imports` — other modules this module depends on
-- `exports` — providers you want to share with other modules
+## @Module() — what goes where
+
+### `providers`
+Anything decorated with `@Injectable()` that you want NestJS to create and inject.
+This includes: services, middleware, guards, interceptors, pipes.
+
+If a class **injects something** or **needs to be injected into something** inside this module, it must be in `providers`.
+
+```ts
+@Injectable()
+export class AuthService { ... }       // a service — goes in providers
+
+@Injectable()
+export class AuthMiddleware { ... }    // middleware is also @Injectable — goes in providers too
+```
+
+### `controllers`
+Classes decorated with `@Controller()` that handle incoming HTTP requests.
+They can inject providers from this module or from imported modules.
+
+```ts
+@Controller('auth')
+export class AuthController {
+  constructor(private authService: AuthService) {}  // AuthService must be in providers
+}
+```
+
+### `imports`
+Other **modules** whose exported providers you need inside this module.
+You don't import a class — you import the **module** that wraps and exports it.
+
+```ts
+// HttpService comes from HttpModule — to use HttpService, import HttpModule
+imports: [HttpModule]
+
+// ConfigService comes from ConfigModule
+imports: [ConfigModule.forRoot({ isGlobal: true })]
+```
+
+### `exports`
+Providers from this module that you want other modules to be able to use.
+
+```ts
+// In AuthModule:
+exports: [AuthService]
+
+// Now any module that does `imports: [AuthModule]` can inject AuthService.
+```
+
+---
+
+## Concrete example
+
+`AuthMiddleware` injects `HttpService` and `ConfigService`:
+
+```
+AuthMiddleware
+  → needs HttpService    → lives in HttpModule       → add HttpModule to imports
+  → needs ConfigService  → lives in ConfigModule     → already global, fine
+  → is itself @Injectable → add AuthMiddleware to providers
+```
+
+```ts
+@Module({
+  imports: [
+    HttpModule,                                    // provides HttpService
+    ConfigModule.forRoot({ isGlobal: true }),      // provides ConfigService globally
+  ],
+  controllers: [AuthController],                   // handles /auth/* routes
+  providers: [AppService, AuthMiddleware],          // AuthMiddleware must be here so NestJS can inject into it
+})
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes('*'); // this alone is NOT enough — must also be in providers
+  }
+}
+```
+
+---
+
+## Checklist when you hit a dependency error
+
+1. **What class is failing?** — the error says `type: 'AuthMiddleware'`
+2. **What does it inject?** — look at its `constructor(private x: X, private y: Y)`
+3. **For each injected thing:**
+   - Is it a service/middleware you wrote? → add it to `providers`
+   - Is it from a NestJS package (`HttpService`, `ConfigService`)? → add the module that provides it to `imports` (`HttpModule`, `ConfigModule`)
+   - Is it from another feature module you wrote? → `imports: [ThatModule]` AND make sure `ThatModule` has it in `exports`
+4. **Is the middleware/guard itself in `providers`?** — easy to forget. `.apply()` alone is not enough.
+
+---
 
 
 

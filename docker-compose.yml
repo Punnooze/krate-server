@@ -27,6 +27,13 @@ services:
       - redis
     environment:
       - NODE_ENV=development
+      - AUTH_SERVICE_URL=http://auth:3001
+      - PROJECT_SERVICE_URL=http://project-service:3002
+      - JOBS_SERVICE_URL=http://jobs:3003
+      - REALTIME_SERVICE_URL=http://realtime:3004
+      - LOGS_SERVICE_URL=http://logs:3005
+      - REDIS_URL=redis://redis:6379
+
     volumes:
       - ./gateway:/app
       - /app/node_modules

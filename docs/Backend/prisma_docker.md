@@ -16,6 +16,9 @@ npx prisma generate
 npx prisma migrate reset
 # Wipes database and reruns all migrations from scratch
 
+docker exec -it krate-postgres psql -U krate -d krate -c "SELECT * FROM \"User\";"
+# View DB
+
 
 
 docker-compose up
