@@ -120,3 +120,8 @@ Without this line, ./auth:/app would overwrite everything in /app including node
 Can you delete src/generated?
 Yes. We're no longer generating there. The client now lives in node_modules/@prisma/client which is the default.
 Delete the folder and also remove it from .gitignore if it was added there.
+
+
+
+
+validator pipe runs the validations added in DTO, without pipe request just falls through
