@@ -10,6 +10,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sh:/docker-entrypoint-initdb.d/init.sh
 
   redis:
     image: redis:7-alpine
@@ -27,6 +28,13 @@ services:
       - redis
     environment:
       - NODE_ENV=development
+      - AUTH_SERVICE_URL=http://auth:3001
+      - PROJECT_SERVICE_URL=http://project-service:3002
+      - JOBS_SERVICE_URL=http://jobs:3003
+      - REALTIME_SERVICE_URL=http://realtime:3004
+      - LOGS_SERVICE_URL=http://logs:3005
+      - REDIS_URL=redis://redis:6379
+
     volumes:
       - ./gateway:/app
       - /app/node_modules
@@ -42,7 +50,7 @@ services:
       - redis
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgresql://krate:krate123@postgres:5432/krate
+      - DATABASE_URL=postgresql://krate:krate123@postgres:5432/krate_auth
       - JWT_SECRET=supersecretkey123
     volumes:
       - ./auth:/app
@@ -60,6 +68,7 @@ services:
       - redis
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=postgresql://krate:krate123@postgres:5432/krate_project
     volumes:
       - ./project-service:/app
       - /app/node_modules
