@@ -19,7 +19,6 @@ export class AuthController {
 
     @Post('login')
     async login(@Body() body: any) {
-        console.log("[Auth Controller] [Login] login api : ", body);
         return this.proxyService.forward({
             targetServiceUrl: this.configService.get<string>('AUTH_SERVICE_URL')!,
             apiPath: "/auth/login",

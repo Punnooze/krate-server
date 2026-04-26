@@ -64,11 +64,7 @@ export class AuthService {
       where: { email: dto.email },
     });
 
-    console.log("[Auth service] [Login] login api dto : ", dto);
-    console.log("[Auth service] [Login] login api user : ", user);
-
     if (!user) {
-      console.log("[Auth Service] here");
       throw new UnauthorizedException('Invalid credentials');
     }
 

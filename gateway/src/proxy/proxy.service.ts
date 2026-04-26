@@ -10,7 +10,6 @@ export class ProxyService {
 
     async forward(dto: ProxyDto) {
         const path = dto.targetServiceUrl + dto.apiPath;
-        console.log("[Proxy Service] path : ", path);
         const requestConfig: AxiosRequestConfig = {
             url: path,
             method: dto.httpMethod,

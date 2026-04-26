@@ -12,7 +12,6 @@ export class AuthMiddleware implements NestMiddleware {
   async use(req: any, res: any, next: () => void) {
     const publicRoutes = ['/auth/register', '/auth/login', '/auth/refresh'];
     const path = req.baseUrl;
-    console.log("[middleware] path : ", path, "req ",req.baseUrl);
     if (publicRoutes.includes(path)) {
       next();
     }
@@ -22,7 +21,6 @@ export class AuthMiddleware implements NestMiddleware {
         res.status(401).json({ message: 'Unauthorized!' });
         return;
       }
-      console.log('Token : ', token);
       const requestConfig: AxiosRequestConfig = {
         url: this.configService.get('AUTH_SERVICE_URL') + '/auth/verify',
         method: 'POST',
