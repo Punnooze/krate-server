@@ -11,6 +11,7 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
 import Redis from 'ioredis'
 import { APP_GUARD } from '@nestjs/core';
 import { OrganizationsController } from './organizations/organizations.controller';
+import { JobsController } from './jobs/jobs.controller';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { OrganizationsController } from './organizations/organizations.controlle
       ),
     }),
   ],
-  controllers: [AppController, AuthController, OrganizationsController],
+  controllers: [AppController, AuthController, OrganizationsController, JobsController],
   providers: [AuthMiddleware,
     AppService,
     {

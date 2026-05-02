@@ -1,3 +1,6 @@
+npm install prisma @prisma/client @prisma/adapter-pg
+# install prisma dependencies
+
 npx prisma init
 # Creates schema.prisma, prisma.config.ts, .env
 

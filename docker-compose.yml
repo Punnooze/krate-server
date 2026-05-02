@@ -84,6 +84,8 @@ services:
       - redis
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=postgresql://krate:krate123@postgres:5432/krate_jobs
+      - REDIS_URL=redis://redis:6379
     volumes:
       - ./jobs:/app
       - /app/node_modules
